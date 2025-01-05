@@ -3,13 +3,13 @@ import AutorController from "../controllers/autorController.js"
 
 const autores = express.Router()
 
-autores.get("/autores", LivroController.listarLivros)
-autores.get(`/autores/:id`, LivroController.listarLivroPorId)
+autores.get("/autores", AutorController.listarAutores)
+autores.get(`/autores/:id`, AutorController.listarLivroPorId)
 
-autores.post("/autores", LivroController.cadastrarLivro)
+autores.post("/autores", AutorController.cadastrarLivro)
 
-autores.put(`/autores/:id`, LivroController.atualizarLivro)
+autores.put(`/autores/:id`, AutorController.atualizarLivro)
 
-autores.delete("/autores/:id", LivroController.excluirLivro)
+autores.delete("/autores/:id", AutorController.excluirLivro)
 
 export default autores
