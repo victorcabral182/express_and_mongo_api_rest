@@ -1,1 +1,2 @@
-# express_and_mongo_api_rest
+# 2404-api-node-express
+Projeto utilizado no curso da Alura

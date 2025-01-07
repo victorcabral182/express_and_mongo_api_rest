@@ -1,15 +1,13 @@
 import express from "express"
-import AutorController from "../controllers/autorController.js"
+import AutorController from "../controllers/autoresController.js"
 
-const autores = express.Router()
+const router = express.Router()
 
-autores.get("/autores", AutorController.listarAutores)
-autores.get(`/autores/:id`, AutorController.listarLivroPorId)
+router
+  .get("/autores", AutorController.listarAutores)
+  .get("/autores/:id", AutorController.listarAutorPorId)
+  .post("/autores", AutorController.cadastrarAutor)
+  .put("/autores/:id", AutorController.atualizarAutor)
+  .delete("/autores/:id", AutorController.excluirAutor)
 
-autores.post("/autores", AutorController.cadastrarLivro)
-
-autores.put(`/autores/:id`, AutorController.atualizarLivro)
-
-autores.delete("/autores/:id", AutorController.excluirLivro)
-
-export default autores
+export default router
