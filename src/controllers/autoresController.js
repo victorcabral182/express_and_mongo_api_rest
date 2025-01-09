@@ -2,10 +2,11 @@ import NaoEncontrado from "../erros/NaoEncontrado.js"
 import { autores } from "../models/index.js"
 
 class AutorController {
-  static listarAutores = async (_, res, next) => {
+  static listarAutores = async (req, _, next) => {
     try {
-      const autoresResultado = await autores.find()
-      res.status(200).json(autoresResultado)
+      const autoresResultado = autores.find()
+      req.resultado = autoresResultado
+      next()
     } catch (erro) {
       next(erro)
     }

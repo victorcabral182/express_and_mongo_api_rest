@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import autopopulate from "mongoose-autopopulate"
 
 const livroSchema = new mongoose.Schema(
   {
@@ -33,6 +34,8 @@ const livroSchema = new mongoose.Schema(
   },
   { versionKey: false }
 )
+
+livroSchema.plugin(autopopulate)
 
 const livros = mongoose.model("livros", livroSchema)
 

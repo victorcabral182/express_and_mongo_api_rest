@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import autopopulate from "mongoose-autopopulate"
 
 const autorSchema = new mongoose.Schema(
   {
@@ -13,6 +14,8 @@ const autorSchema = new mongoose.Schema(
     versionKey: false,
   }
 )
+
+autorSchema.plugin(autopopulate)
 
 const autores = mongoose.model("autores", autorSchema)
 

@@ -1,11 +1,12 @@
+import { autores, livros } from "../models/index.js"
 import NaoEncontrado from "../erros/NaoEncontrado.js"
-import { livros } from "../models/index.js"
 
 class LivroController {
-  static listarLivros = async (_, res, next) => {
+  static listarLivrosPaginado = async (req, res, next) => {
     try {
-      const livrosResultado = await livros.find().populate("autor").exec()
-      res.status(200).json(livrosResultado)
+      const buscaLivros = livros.find()
+      req.resultado = buscaLivros
+      next()
     } catch (erro) {
       next(erro)
     }
@@ -14,10 +15,7 @@ class LivroController {
   static listarLivroPorId = async (req, res, next) => {
     try {
       const id = req.params.id
-      const livroResultados = await livros
-        .findById(id)
-        .populate("autor", "nome")
-        .exec()
+      const livroResultados = await livros.findById(id)
       if (livroResultados !== null) res.status(200).send(livroResultados)
       else next(new NaoEncontrado("Id do livro não localizado"))
     } catch (erro) {
@@ -55,15 +53,48 @@ class LivroController {
     }
   }
 
-  static listarLivroPorEditora = async (req, res, next) => {
+  static listarLivroPorFiltro = async (req, res, next) => {
     try {
-      const editora = req.query.editora
-      const livrosResultado = await livros.find({ editora: editora })
-      res.status(200).send(livrosResultado)
+      const busca = await processaBusca(req.query, next)
+      if (busca !== null) {
+        const livrosResultado = livros.find(busca)
+        req.resultado = livrosResultado
+        next()
+      } else {
+        res.status(200).send([])
+      }
     } catch (erro) {
       next(erro)
     }
   }
+}
+
+async function processaBusca(params) {
+  const { editora, titulo, minPaginas, maxPaginas, nomeAutor } = params
+
+  let busca = {}
+
+  if (editora) busca.editora = { $regex: editora, $options: "i" }
+  if (titulo) busca.titulo = { $regex: titulo, $options: "i" }
+
+  if (nomeAutor) {
+    const autor = await autores.findOne({
+      nome: { $regex: nomeAutor, $options: "i" },
+    })
+    if (autor !== null) {
+      busca.autor = autor._id
+    } else {
+      busca = null
+    }
+  }
+
+  if (minPaginas || maxPaginas) busca.numeroPaginas = {}
+  // gte = maior ou igual
+  if (minPaginas) busca.numeroPaginas.$gte = minPaginas
+  // lte = menor ou igual
+  if (maxPaginas) busca.numeroPaginas.$lte = maxPaginas
+
+  return busca
 }
 
 export default LivroController
